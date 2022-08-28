@@ -10,7 +10,7 @@ class XApiConnect:
         self.session: XenAPI.Session = None
         try:
            self.session = XenAPI.Session(env['url'])
-           self.session.xenapi.login_with_password(env['login'], env['pwd'], "2.3", "xs-storage")
+           self.session.xenapi.login_with_password(env['login'], env['pwd'], "2.3", "xapi-xs-nfs-storage")
         except ConnectionRefusedError as e:
             config.logger.error("XenAPIConnect URL: " + e.strerror)
             self.session = None
