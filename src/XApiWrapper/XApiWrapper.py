@@ -46,4 +46,5 @@ class XApiWrapper:
                         xapi_sr.sr_name_label, 
                         xapi_sr.sr_name_description
                         )
+        self.__config.logger.info("SR_List - Updated.")
 
