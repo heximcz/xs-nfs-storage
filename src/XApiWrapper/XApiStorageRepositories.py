@@ -13,8 +13,13 @@ class XApiStorageRepositories:
         for sr in all_sr:
             record = self.xapi.session.xenapi.SR.get_record(sr)
             if (record["type"] == "nfs"):
-                self.__one_sr.append(XApiOneStorage(sr_uuid = record["uuid"], sr_name_label = record["name_label"],
-                                                    sr_name_description = record["name_description"]))
+                self.__one_sr.append(
+                    XApiOneStorage(
+                        sr_uuid = record["uuid"],
+                        sr_name_label = record["name_label"],
+                        sr_name_description = record["name_description"]
+                        )
+                    )
         return self.__one_sr
 
 @dataclass

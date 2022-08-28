@@ -7,26 +7,27 @@ class XApiWrapper:
     
     def __init__(self, config: LoadConfig) -> None:
         self.__config = config
-        self.__xapi = XApiConnect(config)
         self.__mysql = MySQL(config)
+        self.__xapi = XApiConnect(config)
     
-    def run(self):
+    def __close_session(self):
+        """
+        Close session
+        """
+        if self.__xapi.session:
+            self.__xapi.close()
+
+    def update_sr(self):
+        """
+        Update SR list in database.
+        This add new SR and update changes in sr-list 
+        """
 
         # load NFS SRs from xapi
         sr = XApiStorageRepositories(self.__xapi)
-        xapi_all_nfs_sr = sr.get_Storages()
-        self.__xapi.close()
+        xapi_all_nfs_sr: list[XApiOneStorage] = sr.get_Storages()
+        self.__close_session()
         # compare xapi and mysql SRs by uuid, add new or update changes
-        self.__check_sr(xapi_all_nfs_sr)
-
-    def __check_sr(self, xapi_all_nfs_sr: XApiOneStorage) -> None:
-        """
-        Compare Xapi and MySQL SR list
-        Add new SR to db if missing
-        Update existing if needed
-        :return: None
-        """
-        # print("Pridat nove SR do db:")
         for xapi_sr in xapi_all_nfs_sr:
             sr_data = self.__mysql.get_sr_by_uuid(xapi_sr.sr_uuid)
             if  sr_data is None:
@@ -44,3 +45,4 @@ class XApiWrapper:
                         xapi_sr.sr_name_label, 
                         xapi_sr.sr_name_description
                         )
+
