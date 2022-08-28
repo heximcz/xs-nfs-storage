@@ -33,7 +33,7 @@ class MySQL:
     #     """
     #     my_cursor = self.__mydb.cursor()
     #     my_cursor.execute("""
-    #         SELECT * FROM `sr-list`
+    #         SELECT * FROM `sr_list`
     #         ORDER BY
     #         uid ASC
     #         """)
@@ -46,8 +46,8 @@ class MySQL:
         """
         my_cursor = self.__mydb.cursor()
         my_cursor.execute("""
-            SELECT * FROM `sr-list`
-            WHERE `sr-uuid` LIKE '""" + uuid + """'
+            SELECT * FROM `sr_list`
+            WHERE `sr_uuid` LIKE '""" + uuid + """'
             """)
         return my_cursor.fetchone()
 
@@ -58,8 +58,8 @@ class MySQL:
         """
         my_cursor = self.__mydb.cursor()
         my_cursor.execute("""
-            INSERT INTO `sr-list`
-            (`uid`, `sr-uuid`, `name-label`, `name-description`, `created`)
+            INSERT INTO `sr_list`
+            (`uid`, `sr_uuid`, `name_label`, `name_description`, `created`)
             VALUES
             (NULL, '""" + sr_uuid + """', '""" + name_label + """', '""" + name_description + """', NOW());
             """)
@@ -73,9 +73,9 @@ class MySQL:
         """
         my_cursor = self.__mydb.cursor()
         my_cursor.execute("""
-            UPDATE `sr-list`
-            SET `name-label` = '""" + name_label + """' , `name-description` = '""" + name_description + """'
-            WHERE `sr-uuid` = '""" + sr_uuid + """'
+            UPDATE `sr_list`
+            SET `name_label` = '""" + name_label + """' , `name_description` = '""" + name_description + """'
+            WHERE `sr_uuid` = '""" + sr_uuid + """'
             """)
         self.__mydb.commit()
         my_cursor.close()
