@@ -1,6 +1,5 @@
 import socket
 import XenAPI
-from typing import Union, Type
 from src.Config import LoadConfig
 
 class XApiConnect:
