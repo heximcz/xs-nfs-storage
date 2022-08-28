@@ -20,13 +20,27 @@ class XApiWrapper:
         self.__check_sr(xapi_all_nfs_sr)
 
     def __check_sr(self, xapi_all_nfs_sr: XApiOneStorage) -> None:
+        """
+        Compare Xapi and MySQL SR list
+        Add new SR to db if missing
+        Update existing if needed
+        :return: None
+        """
         # print("Pridat nove SR do db:")
         for xapi_sr in xapi_all_nfs_sr:
-            sr_data = self.__mysql.get_sr_by_uuid(xapi_sr.get_sr_uuid())
+            sr_data = self.__mysql.get_sr_by_uuid(xapi_sr.sr_uuid)
             if  sr_data is None:
                 # pridej nove SR do DB
-                self.__mysql.add_new_sr(xapi_sr.get_sr_uuid(), xapi_sr.get_sr_name_label(), xapi_sr.get_sr_name_description())
+                self.__mysql.add_new_sr(
+                    xapi_sr.sr_uuid,
+                    xapi_sr.sr_name_label,
+                    xapi_sr.sr_name_description
+                    )
             else:
                 # aktualizuj hodnoty (muze se zmenit name label nebo description) v pripade zmeny
-                if xapi_sr.get_sr_name_label() != sr_data[2] or xapi_sr.get_sr_name_description() != sr_data[3]:
-                    self.__mysql.update_sr(xapi_sr.get_sr_uuid(), xapi_sr.get_sr_name_label(), xapi_sr.get_sr_name_description())
+                if xapi_sr.sr_name_label != sr_data[2] or xapi_sr.sr_name_description != sr_data[3]:
+                    self.__mysql.update_sr(
+                        xapi_sr.sr_uuid, 
+                        xapi_sr.sr_name_label, 
+                        xapi_sr.sr_name_description
+                        )
