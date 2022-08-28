@@ -13,14 +13,15 @@ class XApiWrapper:
     def __close_session(self):
         """
         Close session
+        :return: None
         """
         if self.__xapi.session:
             self.__xapi.close()
 
     def update_sr(self):
         """
-        Update SR list in database.
-        This add new SR and update changes in sr-list 
+        Add new NFS SR and update changes in name-label and name-description.
+        :return: None
         """
 
         # load NFS SRs from xapi

@@ -1,4 +1,5 @@
 XenAPI
 pyyaml
 mysql-connector-python
+fire
 mypy
