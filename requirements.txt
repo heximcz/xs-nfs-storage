@@ -1,0 +1,3 @@
+XenAPI
+pyyaml
+mysql-connector-python

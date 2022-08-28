@@ -1,0 +1,15 @@
+# MySQL
+mysql:
+    host: "127.0.0.1"
+    user: "user"
+    passwd: "password"
+    database: "dbname"
+
+# XenAPI
+xs:
+    # url to master xcp-ng
+    url: "https://my.domain.com"
+    # root login
+    login: "root"
+    # root password
+    pwd: "mysecretpassword"

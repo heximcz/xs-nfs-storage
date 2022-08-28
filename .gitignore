@@ -1,0 +1,6 @@
+/config.yml
+__pycache__/
+*.py[cod]
+/xs-venv
+test.py
+/doc
