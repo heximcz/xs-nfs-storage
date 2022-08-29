@@ -2,5 +2,4 @@
 __pycache__/
 *.py[cod]
 /xs-venv
-test.py
 /doc
