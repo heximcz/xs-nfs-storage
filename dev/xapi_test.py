@@ -75,8 +75,8 @@ def getVDI(session: XenAPI.Session):
         sr_record = session.xenapi.SR.get_record(vdi_record['SR'])
 
         # zajima nas jen co je na NFS SRs
-        # if sr_record["type"] != "nfs":
-        #     continue
+        if sr_record["type"] != "nfs":
+            continue
 
         # tiskni vse co zatim mas
         print()
