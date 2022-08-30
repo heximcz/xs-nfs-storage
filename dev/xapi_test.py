@@ -21,9 +21,12 @@ def getSR(session):
     all = session.xenapi.SR.get_all()
     print("---------------------")
     for vm in all:
-        record = session.xenapi.SR.get_record(vm)
-        if (record["type"] == "nfs"):
-            print(record["uuid"], record["name_label"])
+        sr_record = session.xenapi.SR.get_record(vm)
+        if (sr_record["type"] == "nfs"):
+            for key, value in sr_record.items():
+                print(key, ' : ', value)
+
+            # print(sr_record["uuid"], sr_record["name_label"])
             print("---------------------")
 
 def getVDI(session: XenAPI.Session):
@@ -72,8 +75,8 @@ def getVDI(session: XenAPI.Session):
         sr_record = session.xenapi.SR.get_record(vdi_record['SR'])
 
         # zajima nas jen co je na NFS SRs
-        if sr_record["type"] != "nfs":
-            continue
+        # if sr_record["type"] != "nfs":
+        #     continue
 
         # tiskni vse co zatim mas
         print()
@@ -124,8 +127,8 @@ if __name__ == "__main__":
     try:
         for i in range(iterations):
             #myfunc(session, i)
-            #getSR(session)
-            getVDI(session)
+            getSR(session)
+            #getVDI(session)
             # getMethods(session)
     finally:
         session.xenapi.session.logout()

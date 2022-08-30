@@ -14,14 +14,6 @@ class XApiWrapper:
         self.__mysql = MySQL(config)
         self.__xapi = XApiConnect(config)
     
-    def __close_session(self):
-        """
-        Close session
-        :return: None
-        """
-        if self.__xapi.session:
-            self.__xapi.close()
-
     def update_sr(self):
         """
         Add new NFS SR and update changes in name-label and name-description.
@@ -31,11 +23,10 @@ class XApiWrapper:
         # load NFS SRs from xapi
         sr = XApiStorageRepositories(self.__xapi)
         xapi_all_nfs_sr: list[XApiOneStorage] = sr.get_Storages()
-        self.__close_session()
         # compare xapi and mysql SRs by uuid, add new or update changes
         for xapi_sr in xapi_all_nfs_sr:
             sr_data = self.__mysql.get_sr_by_uuid(xapi_sr.sr_uuid)
-            if  sr_data is None:
+            if sr_data is None:
                 # pridej nove SR do DB
                 self.__mysql.add_new_sr(
                     xapi_sr.sr_uuid,
@@ -54,15 +45,28 @@ class XApiWrapper:
 
     def update_vdi(self):
         """
-        mysql tabulky
+        All in One
 
         sr-list - obsahuje nazvy a uuid NFS SR
         vm-list - obsahuje nazvy VM
         sr-file-name - obsahuje nazev souboru (disků) danneho VM a nazev disku v xenu
-        """
-        vdi = XApiVdiList(self.__xapi)
-        xapi_all_vdi: list[XApiOneVdi] = vdi.get_VDIs()
-        self.__close_session()
 
-        for x in xapi_all_vdi:
-            print(x)
+        Novy postup:
+        1. zacit nactenim SR, jejich zaznam ma vsechny vdi na tom SR
+        2. ze SR nacist jen VDI SR
+        3. poracovat stejne dal jako v testu
+
+        """
+        # load NFS SRs from xapi
+        sr = XApiStorageRepositories(self.__xapi)
+        nfs_srs: list[XApiOneStorage] = sr.get_Storages()
+
+        # one SR, many VDIs
+        all_vdi: list[XApiOneVdi] = []
+        vdi = XApiVdiList(self.__config, self.__xapi)
+        for one_sr in nfs_srs:
+            vdi.append_VDIs(one_sr, all_vdi)
+
+        print(all_vdi)
+        # mam vsechny VDIcka ze vsech SR
+        #  

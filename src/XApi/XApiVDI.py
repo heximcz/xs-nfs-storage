@@ -1,35 +1,46 @@
+import os, sys
+import XenAPI
 from dataclasses import dataclass
+from src.XApi.XApiSR import XApiOneStorage
+from src.Config import LoadConfig
 from src.XApi import XApiConnect
-
 
 class XApiVdiList:
 
-    def __init__(self, xapi: XApiConnect) -> None:
+    def __init__(self, config: LoadConfig, xapi: XApiConnect) -> None:
+        self.__config = config
         self.__xapi = xapi
 
-    def get_VDIs(self) -> list:
-        vdi: list[XApiOneVdi] = []
-        
-        # zjisti vsechny idenfifikatory VDI. Vraci list OpaqueRef VDIs
-        all_vdi_or = self.__xapi.session.xenapi.VDI.get_all()
-        
-        for one_vdi_or in all_vdi_or:
-            record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
-            vdi.append(
-                XApiOneVdi(
-                    vdi_uuid = record["uuid"],
-                    vdi_name_label = record["name_label"],
-                    vdi_sr = record["SR"],
-                    vdi_vbds = record["VBDs"],
-                    vdi_is_a_snapshot = record["is_a_snapshot"]
+    def append_VDIs(self, vdis: XApiOneStorage, all_vdi: list) -> None:
+        """
+        Get data from VDI and append new XApiOneVdi dataclasses to "all_vdi" list
+        :return: None
+        """
+
+        # nacti jednotlive VDI do dataclass listu
+        self.__xapi.open()
+        try:
+            for one_vdi_or in vdis.sr_vdis:
+                record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
+                all_vdi.append(
+                    XApiOneVdi(
+                        vdi_uuid = record["uuid"],
+                        vdi_name_label = record["name_label"],
+                        vdi_sr = vdis,
+                        vdi_vbds = record["VBDs"],
+                        vdi_is_a_snapshot = record["is_a_snapshot"]
+                        )
                     )
-                )
-        return vdi
+        except XenAPI.XenAPI.Failure as e:
+            self.__config.logger.error(e)
+            sys.exit(os.EX_UNAVAILABLE)
+        self.__xapi.close()
 
 @dataclass
 class XApiOneVdi():
     """
-    VDI RECORD:
+    Datova struktura VDI z XAPI
+
     uuid  :  71e5b355-e09d-435c-ade0-f052ddf7df5f
     name_label  :  Debian 11x2 on ZFS SR01 0
     name_description  :  Created by template provisioner
@@ -65,13 +76,12 @@ class XApiOneVdi():
     """
     vdi_uuid: str
     vdi_name_label: str
-    vdi_sr: str
+    vdi_sr: XApiOneStorage
     vdi_vbds: list
     vdi_is_a_snapshot: bool
     
-    # print class as str
     def __str__(self):
-        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label)
+        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR[]: %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.vdi_sr)
 
     def __repr__(self):
         return str(self)
