@@ -82,7 +82,7 @@ class XApiOneVdi():
     vdi_is_a_snapshot: bool
     
     def __str__(self):
-        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR[]: %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.vdi_sr)
+        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR(dataclass): %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.vdi_sr)
 
     def __repr__(self):
         return str(self)
