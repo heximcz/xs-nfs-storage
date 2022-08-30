@@ -54,7 +54,8 @@ class XApiWrapper:
         Novy postup:
         1. zacit nactenim SR, jejich zaznam ma vsechny vdi na tom SR
         2. ze SR nacist jen VDI SR
-        3. poracovat stejne dal jako v testu
+        3. proskenuj VBDs v VDIs a prirad spravne VM
+        4. nasypat to do databaze
 
         """
         # load NFS SRs from xapi
@@ -67,6 +68,14 @@ class XApiWrapper:
         for one_sr in nfs_srs:
             vdi.append_VDIs(one_sr, all_vdi)
 
-        print(all_vdi)
-        # mam vsechny VDIcka ze vsech SR
-        #  
+        # print(all_vdi)
+        # mam vse v all_vdi
+        # TODO proskenuj VBDs ve VDIs a prirad spravne VM
+
+        # TODO nasypat data do databaze
+        # ? jak zjistit pripadne zmeny v uuid
+        # ? resit to, nebo ne
+        # ? verzovani v databazi a ukladat vzdy novou
+        # ? nebo jit stylem: prvni inicializace a pak jen aktualizace podle dat v databazi.
+        # verzovani by bylo lepsi, pak staci udelat rutina ma mazani starych verzi
+
