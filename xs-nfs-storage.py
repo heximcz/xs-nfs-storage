@@ -3,7 +3,7 @@ import sys
 import fire
 from src.Config import LoadConfig
 from src.Exceptions import ConfigException, XenAPIException
-from src.XApiWrapper import XApiWrapper
+from src.XApi.XApiWrapper import XApiWrapper
 
 try:
     config = LoadConfig()

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.XApiWrapper import XApiConnect
+from src.XApi import XApiConnect
 
 
 class XApiStorageRepositories:
