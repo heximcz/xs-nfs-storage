@@ -28,6 +28,11 @@ def getSR(session):
 
 def getVDI(session: XenAPI.Session):
     """
+    1. zjisti vsechny VDI
+    2. podle jednoho VDI se zjisti na jakem je SR, pokud je to na NFS pokracuje dal
+    3. proskenuje vsechny VBDs a urkci k jakem VM patri
+
+    tip:
     xapi používá OpaqueRef jako skutečný identifikátor objektu,
     primární klíč v interní databázi xapi. Když jeden objekt
     ukazuje na druhý, neříká 'link=uuid', říká 'link=opaqueref'.
@@ -35,8 +40,6 @@ def getVDI(session: XenAPI.Session):
     Jak tedy aktualizovat uuid disku? Jak zjistim zmenu?
 
     or = OpaqueRef
-
-    TODO: zatim to vraci nejake kraviny
     """
 
     # zjisti vsechny idenfifikatory VDI. Vraci list OpaqueRef VDIs
@@ -46,36 +49,50 @@ def getVDI(session: XenAPI.Session):
 
         # VDI Record - kompletni informace o VDI (VDI je fyzicky soubor na disku, ktery se pripojuje s VM pres VBD)
         vdi_record = session.xenapi.VDI.get_record(one_vdi_or)
-        print("VDI RECORD:")
-        print(vdi_record)
 
-        # get_SR - vraci OpaqueRef SR danneho VDI
-        sr_or = session.xenapi.VDI.get_SR(one_vdi_or)
+        # trochu to zrychlime - vdi musi mit VBD, jinak me nezajima
+        if not vdi_record["VBDs"]:
+            continue
+
+        # get_SR - vraci OpaqueRef SR danneho VDI 
+        # sr_or = session.xenapi.VDI.get_SR(one_vdi_or) # lze pouzit vdi_record['SR'] - setrime dotazy do xapi
         # print(sr_or)
 
         # z get_SR mam OpaqueRef dannerh SR, nyni porebuji podrobnosti o SR
         sr_record = session.xenapi.SR.get_record(vdi_record['SR'])
+
+        # zajima nas jen co je na NFS SRs
+        if sr_record["type"] != "nfs":
+            continue
+
+        print()
+        print("VDI RECORD:")
+        for key, value in vdi_record.items():
+            print(key, ' : ', value)
+
+        print()
         print("SR RECORD:")
-        print(sr_record)
+        for key, value in sr_record.items():
+            print(key, ' : ', value)
 
         # k jakemu VM disk (VDI) patri. Vraci seznam. Jeden disk muze byt tedy pripojen k vice VM
-        all_vbds_or = session.xenapi.VDI.get_VBDs(one_vdi_or)
-        for one_vbd_or in all_vbds_or:
+        # all_vbds_or = session.xenapi.VDI.get_VBDs(one_vdi_or) - lze pouzit vdi_record["VBDs"] - setrime dotazy do xapi
+        for one_vbd_or in vdi_record["VBDs"]:
             # vrati informace o VBD, ale je v nem pouze OpaqueRef na VM
             vbd_record = session.xenapi.VBD.get_record(one_vbd_or)
+            print()
             print("VBD RECORD:")
-            print(vbd_record)
+            for key, value in vbd_record.items():
+                print(key, ' : ', value)
             
             # zjisti jakemu VM patri
             vm_record = session.xenapi.VM.get_record(vbd_record['VM'])
+            print()
             print("VM RECORD:")
-            print(vm_record)
+            for key, value in vm_record.items():
+                print(key, ' : ', value)
 
-        print("-----")
-
-        break
-
-    return
+        print("============================================================================================================")
 
 def getMethods(session):
     """
