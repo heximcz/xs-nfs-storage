@@ -21,7 +21,7 @@ class XApiWrapper:
         """
 
         # load NFS SRs from xapi
-        sr = XApiStorageRepositories(self.__xapi)
+        sr = XApiStorageRepositories(self.__config, self.__xapi)
         xapi_all_nfs_sr: list[XApiOneStorage] = sr.get_Storages()
         # compare xapi and mysql SRs by uuid, add new or update changes
         for xapi_sr in xapi_all_nfs_sr:
@@ -58,7 +58,7 @@ class XApiWrapper:
 
         """
         # load NFS SRs from xapi
-        sr = XApiStorageRepositories(self.__xapi)
+        sr = XApiStorageRepositories(self.__config, self.__xapi)
         nfs_srs: list[XApiOneStorage] = sr.get_Storages()
 
         # one SR, many VDIs

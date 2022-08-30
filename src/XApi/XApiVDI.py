@@ -18,8 +18,8 @@ class XApiVdiList:
         """
 
         # nacti jednotlive VDI do dataclass listu
-        self.__xapi.open()
         try:
+            self.__xapi.open()
             for one_vdi_or in vdis.sr_vdis:
                 record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
                 all_vdi.append(
@@ -34,7 +34,8 @@ class XApiVdiList:
         except XenAPI.XenAPI.Failure as e:
             self.__config.logger.error(e)
             sys.exit(os.EX_UNAVAILABLE)
-        self.__xapi.close()
+        finally:
+            self.__xapi.close()
 
 @dataclass
 class XApiOneVdi():

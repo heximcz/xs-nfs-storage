@@ -1,12 +1,15 @@
+import os, sys
+import XenAPI
 from dataclasses import dataclass
+from src.Config import LoadConfig
 from src.XApi import XApiConnect
 
 
 class XApiStorageRepositories:
 
-    def __init__(self, xapi: XApiConnect) -> None:
+    def __init__(self,config: LoadConfig, xapi: XApiConnect) -> None:
+        self.__config = config
         self.__xapi = xapi
-        self.__xapi.open()
         self.__one_sr: list[XApiOneStorage] = []
 
     def get_Storages(self) -> list:
@@ -14,20 +17,25 @@ class XApiStorageRepositories:
         Get data from NFS SRs and create list of dataclasses
         :return: list[XApiOneStorage]
         """
-        
-        all_sr = self.__xapi.session.xenapi.SR.get_all()
-        for sr in all_sr:
-            record = self.__xapi.session.xenapi.SR.get_record(sr)
-            if (record["type"] == "nfs"):
-                self.__one_sr.append(
-                    XApiOneStorage(
-                        sr_uuid = record["uuid"],
-                        sr_name_label = record["name_label"],
-                        sr_name_description = record["name_description"],
-                        sr_vdis = record["VDIs"]
+        try:
+            self.__xapi.open()
+            all_sr = self.__xapi.session.xenapi.SR.get_all()
+            for sr in all_sr:
+                record = self.__xapi.session.xenapi.SR.get_record(sr)
+                if (record["type"] == "nfs"):
+                    self.__one_sr.append(
+                        XApiOneStorage(
+                            sr_uuid = record["uuid"],
+                            sr_name_label = record["name_label"],
+                            sr_name_description = record["name_description"],
+                            sr_vdis = record["VDIs"]
+                            )
                         )
-                    )
-        self.__xapi.close()
+        except XenAPI.XenAPI.Failure as e:
+            self.__config.logger.error(e)
+            sys.exit(os.EX_UNAVAILABLE)
+        finally:
+            self.__xapi.close()
         return self.__one_sr
 
 @dataclass
