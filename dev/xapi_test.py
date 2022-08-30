@@ -97,6 +97,7 @@ def getVDI(session: XenAPI.Session):
             
             # dle OpaqueRef zjisti jakemu VM patri
             vm_record = session.xenapi.VM.get_record(vbd_record['VM'])
+            # snapsoty vm : is_a_snapshot  :  True - stejny parametr je u VDI
             print()
             print("VM RECORD:")
             for key, value in vm_record.items():
