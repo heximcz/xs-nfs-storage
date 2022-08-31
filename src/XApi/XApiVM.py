@@ -4,7 +4,7 @@ from src.XApi.XApiVBD import XApiOneVbd
 
 @dataclass
 class XApiOneVm():
-    """
+    '''
     VM structure from XAPI
 
     uuid  :  0e16dc5f-a169-c322-2790-fa4e3ca3e47f
@@ -93,7 +93,7 @@ class XApiOneVm():
     reference_label  :  debian-11
     domain_type  :  hvm
     NVRAM  :  {}
-    """
+    '''
 
     vm_uuid: str
     vm_name_label: str
@@ -108,33 +108,33 @@ class XApiOneVm():
         return str(self)
 
 class XApiVmList:
-    """
+    '''
     VMs
-    """
+    '''
 
     def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
         self.__all_vm: list[XApiOneVm] = []
 
     def set_VMs(self, vbds: list[XApiOneVbd]) -> None:
-        """
+        '''
         Set list[XApiOneVbd]
-        """
+        '''
         for one_vbd in vbds:
             self.__create_vm_list(one_vbd)
 
     def get_VMs(self) -> list[XApiOneVm]:
-        """
+        '''
         List with all information about VM (SR, VDI, VBD but for one VDI from VM)
         Return list[XApiOneVm]
-        """
+        '''
         return self.__all_vm
 
     def __create_vm_list(self, one_vbd: XApiOneVbd) -> None:
-        """
+        '''
         Get data from VM and append new XApiOneVm dataclasses to "all_vm" list
         :return: None
-        """
+        '''
 
         # load one by one VM to a dataclass list
         # ..._or = OpaqueRef
