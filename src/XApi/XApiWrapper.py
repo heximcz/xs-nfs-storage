@@ -58,17 +58,15 @@ class XApiWrapper:
         4. nasypat to do databaze
 
         """
-        # load NFS SRs from xapi
+        # NFS SRs from xapi
         sr = XApiStorageRepositories(self.__config, self.__xapi)
-        nfs_srs: list[XApiOneStorage] = sr.get_Storages()
 
-        # one SR, many VDIs
-        all_vdi: list[XApiOneVdi] = []
+        # set VDIs from SR
         vdi = XApiVdiList(self.__config, self.__xapi)
-        for one_sr in nfs_srs:
-            vdi.append_VDIs(one_sr, all_vdi)
+        vdi.set_VDIs(sr.get_NFS_Storages())
 
-        # print(all_vdi)
+        print(vdi.get_VDIs())
+
         # mam vse v all_vdi
         # TODO proskenuj VBDs ve VDIs a prirad spravne VM
 

@@ -1,46 +1,14 @@
 import os, sys
 import XenAPI
 from dataclasses import dataclass
-from src.XApi.XApiSR import XApiOneStorage
 from src.Config import LoadConfig
-from src.XApi import XApiConnect
-
-class XApiVdiList:
-
-    def __init__(self, config: LoadConfig, xapi: XApiConnect) -> None:
-        self.__config = config
-        self.__xapi = xapi
-
-    def append_VDIs(self, one_sr: XApiOneStorage, all_vdi: list) -> None:
-        """
-        Get data from VDI and append new XApiOneVdi dataclasses to "all_vdi" list
-        :return: None
-        """
-
-        # nacti jednotlive VDI do dataclass listu
-        try:
-            self.__xapi.open()
-            for one_vdi_or in one_sr.sr_vdis:
-                record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
-                all_vdi.append(
-                    XApiOneVdi(
-                        vdi_uuid = record["uuid"],
-                        vdi_name_label = record["name_label"],
-                        vdi_vbds = record["VBDs"],
-                        vdi_is_a_snapshot = record["is_a_snapshot"],
-                        sr = one_sr
-                        )
-                    )
-        except XenAPI.XenAPI.Failure as e:
-            self.__config.logger.error(e)
-            sys.exit(os.EX_UNAVAILABLE)
-        finally:
-            self.__xapi.close()
+from src.XApi.XApiSR import XApiOneStorage
+from src.XApi.XApiConnect import XApiConnect
 
 @dataclass
 class XApiOneVdi():
     """
-    Datova struktura VDI z XAPI
+    VDI structure from XAPI
 
     uuid  :  71e5b355-e09d-435c-ade0-f052ddf7df5f
     name_label  :  Debian 11x2 on ZFS SR01 0
@@ -75,6 +43,7 @@ class XApiOneVdi():
     is_tools_iso  :  False
     cbt_enabled  :  False
     """
+
     vdi_uuid: str
     vdi_name_label: str
     vdi_vbds: list
@@ -86,3 +55,53 @@ class XApiOneVdi():
 
     def __repr__(self):
         return str(self)
+
+class XApiVdiList:
+    """
+    Find VDIs data from XAPI
+    """
+
+    def __init__(self, config: LoadConfig, xapi: XApiConnect) -> None:
+        self.__config = config
+        self.__xapi = xapi
+        self.__all_vdi: list[XApiOneVdi] = []
+    
+    def set_VDIs(self, nfs_srs: list[XApiOneStorage]) -> None:
+        """
+        Set list[XApiOneVdi]
+        """
+        for one_sr in nfs_srs:
+            self.__create_Vdi_list(one_sr)
+    
+    def get_VDIs(self) -> list[XApiOneVdi]:
+        """
+        Return list[XApiOneVdi]
+        """
+        return self.__all_vdi
+
+    def __create_Vdi_list(self, one_sr: XApiOneStorage) -> None:
+        """
+        Get data from VDI and append new XApiOneVdi dataclasses to "all_vdi" list
+        :return: None
+        """
+
+        # nacti jednotlive VDI do dataclass listu
+        try:
+            self.__xapi.open()
+            for one_vdi_or in one_sr.sr_vdis:
+                record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
+                self.__all_vdi.append(
+                    XApiOneVdi(
+                        vdi_uuid = record["uuid"],
+                        vdi_name_label = record["name_label"],
+                        vdi_vbds = record["VBDs"],
+                        vdi_is_a_snapshot = record["is_a_snapshot"],
+                        sr = one_sr
+                        )
+                    )
+        except XenAPI.XenAPI.Failure as e:
+            self.__config.logger.error(e)
+            sys.exit(os.EX_UNAVAILABLE)
+        finally:
+            self.__xapi.close()
+

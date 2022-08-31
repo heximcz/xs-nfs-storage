@@ -4,44 +4,10 @@ from dataclasses import dataclass
 from src.Config import LoadConfig
 from src.XApi import XApiConnect
 
-
-class XApiStorageRepositories:
-
-    def __init__(self,config: LoadConfig, xapi: XApiConnect) -> None:
-        self.__config = config
-        self.__xapi = xapi
-        self.__one_sr: list[XApiOneStorage] = []
-
-    def get_Storages(self) -> list:
-        """
-        Get data from NFS SRs and create list of dataclasses
-        :return: list[XApiOneStorage]
-        """
-        try:
-            self.__xapi.open()
-            all_sr = self.__xapi.session.xenapi.SR.get_all()
-            for sr in all_sr:
-                record = self.__xapi.session.xenapi.SR.get_record(sr)
-                if (record["type"] == "nfs"):
-                    self.__one_sr.append(
-                        XApiOneStorage(
-                            sr_uuid = record["uuid"],
-                            sr_name_label = record["name_label"],
-                            sr_name_description = record["name_description"],
-                            sr_vdis = record["VDIs"]
-                            )
-                        )
-        except XenAPI.XenAPI.Failure as e:
-            self.__config.logger.error(e)
-            sys.exit(os.EX_UNAVAILABLE)
-        finally:
-            self.__xapi.close()
-        return self.__one_sr
-
 @dataclass
 class XApiOneStorage():
     """
-    Datova struktura SR z XAPI
+    SR structure from XAPI
 
     uuid  :  7590b1d2-521a-2ccb-92e8-f1192b18a76c
     name_label  :  STORAGE 01
@@ -77,3 +43,41 @@ class XApiOneStorage():
 
     def __repr__(self):
         return str(self)
+
+class XApiStorageRepositories:
+    """
+    Find NFS SR from XAPI
+    """
+
+    def __init__(self,config: LoadConfig, xapi: XApiConnect) -> None:
+        self.__config = config
+        self.__xapi = xapi
+        self.__one_sr: list[XApiOneStorage] = []
+
+    def get_NFS_Storages(self) -> list[XApiOneStorage]:
+        """
+        Get data from NFS SRs and create list of dataclasses
+        :return: list[XApiOneStorage]
+        """
+        try:
+            self.__xapi.open()
+            all_sr = self.__xapi.session.xenapi.SR.get_all()
+            for sr in all_sr:
+                record = self.__xapi.session.xenapi.SR.get_record(sr)
+                if (record["type"] == "nfs"):
+                    self.__one_sr.append(
+                        XApiOneStorage(
+                            sr_uuid = record["uuid"],
+                            sr_name_label = record["name_label"],
+                            sr_name_description = record["name_description"],
+                            sr_vdis = record["VDIs"]
+                            )
+                        )
+        except XenAPI.XenAPI.Failure as e:
+            self.__config.logger.error(e)
+            sys.exit(os.EX_UNAVAILABLE)
+        finally:
+            self.__xapi.close()
+        
+        return self.__one_sr
+
