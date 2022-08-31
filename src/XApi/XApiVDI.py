@@ -11,7 +11,7 @@ class XApiVdiList:
         self.__config = config
         self.__xapi = xapi
 
-    def append_VDIs(self, vdis: XApiOneStorage, all_vdi: list) -> None:
+    def append_VDIs(self, one_sr: XApiOneStorage, all_vdi: list) -> None:
         """
         Get data from VDI and append new XApiOneVdi dataclasses to "all_vdi" list
         :return: None
@@ -20,15 +20,15 @@ class XApiVdiList:
         # nacti jednotlive VDI do dataclass listu
         try:
             self.__xapi.open()
-            for one_vdi_or in vdis.sr_vdis:
+            for one_vdi_or in one_sr.sr_vdis:
                 record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
                 all_vdi.append(
                     XApiOneVdi(
                         vdi_uuid = record["uuid"],
                         vdi_name_label = record["name_label"],
-                        vdi_sr = vdis,
                         vdi_vbds = record["VBDs"],
-                        vdi_is_a_snapshot = record["is_a_snapshot"]
+                        vdi_is_a_snapshot = record["is_a_snapshot"],
+                        vdi_sr = one_sr
                         )
                     )
         except XenAPI.XenAPI.Failure as e:
@@ -77,9 +77,9 @@ class XApiOneVdi():
     """
     vdi_uuid: str
     vdi_name_label: str
-    vdi_sr: XApiOneStorage
     vdi_vbds: list
     vdi_is_a_snapshot: bool
+    sr: XApiOneStorage
     
     def __str__(self):
         return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR(dataclass): %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.vdi_sr)
