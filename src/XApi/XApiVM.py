@@ -1,7 +1,4 @@
-import os, sys
-import XenAPI
 from dataclasses import dataclass
-from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
 from src.XApi.XApiVBD import XApiOneVbd
 
@@ -115,8 +112,7 @@ class XApiVmList:
     VMs
     """
 
-    def __init__(self, config: LoadConfig, xapi: XApiConnect) -> None:
-        self.__config = config
+    def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
         self.__all_vm: list[XApiOneVm] = []
 
@@ -142,20 +138,13 @@ class XApiVmList:
 
         # load one by one VM to a dataclass list
         # ..._or = OpaqueRef
-        try:
-            self.__xapi.open()
-            record = self.__xapi.session.xenapi.VM.get_record(one_vbd.vbd_vm)
-            self.__all_vm.append(
-                XApiOneVm(
-                    vm_uuid = record["uuid"],
-                    vm_name_label = record["name_label"],
-                    vm_name_description = record["name_description"],
-                    vm_is_a_snapshot = record["is_a_snapshot"],
-                    vbd = one_vbd
-                    )
+        record = self.__xapi.session.xenapi.VM.get_record(one_vbd.vbd_vm)
+        self.__all_vm.append(
+            XApiOneVm(
+                vm_uuid = record["uuid"],
+                vm_name_label = record["name_label"],
+                vm_name_description = record["name_description"],
+                vm_is_a_snapshot = record["is_a_snapshot"],
+                vbd = one_vbd
                 )
-        except XenAPI.XenAPI.Failure as e:
-            self.__config.logger.error(e)
-            sys.exit(os.EX_UNAVAILABLE)
-        finally:
-            self.__xapi.close()
+            )

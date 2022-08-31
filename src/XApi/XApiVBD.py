@@ -1,7 +1,4 @@
-import os, sys
-import XenAPI
 from dataclasses import dataclass
-from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
 from src.XApi.XApiVDI import XApiOneVdi
 
@@ -51,8 +48,7 @@ class XApiVbdList:
     VBDs
     """
 
-    def __init__(self, config: LoadConfig, xapi: XApiConnect) -> None:
-        self.__config = config
+    def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
         self.__all_vbd: list[XApiOneVbd] = []
 
@@ -60,6 +56,7 @@ class XApiVbdList:
         """
         Set list[XApiOneVbd]
         """
+        self.__xapi.open()
         for one_vdi in vdis:
             self.__create_vbd_list(one_vdi)
     
@@ -76,22 +73,15 @@ class XApiVbdList:
         """
 
         # nacti jednotlive VBD do dataclass listu
-        try:
-            self.__xapi.open()
-            for one_vbd_or in one_vdi.vdi_vbds:
-                record = self.__xapi.session.xenapi.VBD.get_record(one_vbd_or)
-                self.__all_vbd.append(
-                    XApiOneVbd(
-                        vbd_uuid = record["uuid"],
-                        vbd_vm = record["VM"],
-                        vbd_vdi = record["VDI"],
-                        vbd_device = record["device"],
-                        vdi = one_vdi
-                        )
+        for one_vbd_or in one_vdi.vdi_vbds:
+            record = self.__xapi.session.xenapi.VBD.get_record(one_vbd_or)
+            self.__all_vbd.append(
+                XApiOneVbd(
+                    vbd_uuid = record["uuid"],
+                    vbd_vm = record["VM"],
+                    vbd_vdi = record["VDI"],
+                    vbd_device = record["device"],
+                    vdi = one_vdi
                     )
-        except XenAPI.XenAPI.Failure as e:
-            self.__config.logger.error(e)
-            sys.exit(os.EX_UNAVAILABLE)
-        finally:
-            self.__xapi.close()
+                )
 

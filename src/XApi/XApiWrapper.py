@@ -1,6 +1,8 @@
+import os, sys
+import XenAPI
 from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
-from src.XApi.XApiSR import XApiStorageRepositories, XApiOneStorage
+from src.XApi.XApiSR import XApiStorageRepositories
 from src.XApi.XApiVDI import XApiVdiList
 from src.XApi.XApiVBD import XApiVbdList
 from src.XApi.XApiVM import XApiVmList
@@ -63,22 +65,31 @@ class XApiWrapper:
         4. nasypat to do databaze
 
         """
-        # NFS SRs from xapi
-        sr = XApiStorageRepositories(self.__config, self.__xapi)
+        try:
+            self.__xapi.open()
 
-        # set VDIs from SR
-        vdi = XApiVdiList(self.__config, self.__xapi)
-        vdi.set_VDIs(sr.get_NFS_Storages())
+            # NFS SRs from xapi
+            sr = XApiStorageRepositories(self.__xapi)
 
-        # set VBDs from VDIs
-        vbd = XApiVbdList(self.__config, self.__xapi)
-        vbd.set_VBDs(vdi.get_VDIs())
+            # set VDIs from SR
+            vdi = XApiVdiList(self.__xapi)
+            vdi.set_VDIs(sr.get_NFS_Storages())
 
-        # finally set VM from VBDs
-        vm = XApiVmList(self.__config, self.__xapi)
-        vm.set_VMs(vbd.get_VBDs())
+            # set VBDs from VDIs
+            vbd = XApiVbdList(self.__xapi)
+            vbd.set_VBDs(vdi.get_VDIs())
 
-        # print(vm.get_VMs())
+            # finally set VM from VBDs
+            vm = XApiVmList(self.__xapi)
+            vm.set_VMs(vbd.get_VBDs())
+
+        except XenAPI.XenAPI.Failure as e:
+            self.__config.logger.error(e)
+            sys.exit(os.EX_UNAVAILABLE)
+        finally:
+            self.__xapi.close()
+
+        print(vm.get_VMs())
 
         # TODO nasypat data do databaze
         # ? jak zjistit pripadne zmeny v uuid

@@ -1,5 +1,3 @@
-import os, sys
-import XenAPI
 from dataclasses import dataclass
 from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
@@ -61,8 +59,7 @@ class XApiVdiList:
     Find VDIs data from XAPI
     """
 
-    def __init__(self, config: LoadConfig, xapi: XApiConnect) -> None:
-        self.__config = config
+    def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
         self.__all_vdi: list[XApiOneVdi] = []
     
@@ -86,22 +83,15 @@ class XApiVdiList:
         """
 
         # nacti jednotlive VDI do dataclass listu
-        try:
-            self.__xapi.open()
-            for one_vdi_or in one_sr.sr_vdis:
-                record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
-                self.__all_vdi.append(
-                    XApiOneVdi(
-                        vdi_uuid = record["uuid"],
-                        vdi_name_label = record["name_label"],
-                        vdi_vbds = record["VBDs"],
-                        vdi_is_a_snapshot = record["is_a_snapshot"],
-                        sr = one_sr
-                        )
+        for one_vdi_or in one_sr.sr_vdis:
+            record = self.__xapi.session.xenapi.VDI.get_record(one_vdi_or)
+            self.__all_vdi.append(
+                XApiOneVdi(
+                    vdi_uuid = record["uuid"],
+                    vdi_name_label = record["name_label"],
+                    vdi_vbds = record["VBDs"],
+                    vdi_is_a_snapshot = record["is_a_snapshot"],
+                    sr = one_sr
                     )
-        except XenAPI.XenAPI.Failure as e:
-            self.__config.logger.error(e)
-            sys.exit(os.EX_UNAVAILABLE)
-        finally:
-            self.__xapi.close()
+                )
 

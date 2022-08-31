@@ -1,7 +1,4 @@
-import os, sys
-import XenAPI
 from dataclasses import dataclass
-from src.Config import LoadConfig
 from src.XApi import XApiConnect
 
 @dataclass
@@ -49,8 +46,7 @@ class XApiStorageRepositories:
     Find NFS SR from XAPI
     """
 
-    def __init__(self,config: LoadConfig, xapi: XApiConnect) -> None:
-        self.__config = config
+    def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
         self.__one_sr: list[XApiOneStorage] = []
 
@@ -59,25 +55,18 @@ class XApiStorageRepositories:
         Get data from NFS SRs and create list of dataclasses
         :return: list[XApiOneStorage]
         """
-        try:
-            self.__xapi.open()
-            all_sr = self.__xapi.session.xenapi.SR.get_all()
-            for sr in all_sr:
-                record = self.__xapi.session.xenapi.SR.get_record(sr)
-                if (record["type"] == "nfs"):
-                    self.__one_sr.append(
-                        XApiOneStorage(
-                            sr_uuid = record["uuid"],
-                            sr_name_label = record["name_label"],
-                            sr_name_description = record["name_description"],
-                            sr_vdis = record["VDIs"]
-                            )
+        all_sr = self.__xapi.session.xenapi.SR.get_all()
+        for sr in all_sr:
+            record = self.__xapi.session.xenapi.SR.get_record(sr)
+            if (record["type"] == "nfs"):
+                self.__one_sr.append(
+                    XApiOneStorage(
+                        sr_uuid = record["uuid"],
+                        sr_name_label = record["name_label"],
+                        sr_name_description = record["name_description"],
+                        sr_vdis = record["VDIs"]
                         )
-        except XenAPI.XenAPI.Failure as e:
-            self.__config.logger.error(e)
-            sys.exit(os.EX_UNAVAILABLE)
-        finally:
-            self.__xapi.close()
+                    )
         
         return self.__one_sr
 
