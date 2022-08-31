@@ -100,9 +100,9 @@ class XApiOneVm():
     vm_name_description: str
     vm_is_a_snapshot: bool
     vbd: XApiOneVbd
-    
+
     def __str__(self):
-        return "VM uuid: %s | VM Name: %s | VM Is Snapshot: %s | VBD(object) %s" % (self.vm_uuid, self.vm_name_label, self.vm_is_a_snapshot, self.vbd)
+        return f"VM uuid: {self.vm_uuid} | VM Name: {self.vm_name_label} | VM Is Snapshot: {self.vm_is_a_snapshot} | VBD(object) {self.vbd}"
 
     def __repr__(self):
         return str(self)
@@ -122,7 +122,7 @@ class XApiVmList:
         """
         for one_vbd in vbds:
             self.__create_vm_list(one_vbd)
-    
+
     def get_VMs(self) -> list[XApiOneVm]:
         """
         List with all information about VM (SR, VDI, VBD but for one VDI from VM)

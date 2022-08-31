@@ -36,9 +36,9 @@ class XApiOneVbd():
     vbd_vdi: str
     vbd_device: str
     vdi: XApiOneVdi
-    
+
     def __str__(self):
-        return "VBD uuid: %s | VDI(object): %s" % (self.vbd_uuid, self.vdi)
+        return f"VBD uuid: {self.vbd_uuid} | VDI(object): {self.vdi}"
 
     def __repr__(self):
         return str(self)
@@ -59,7 +59,7 @@ class XApiVbdList:
         self.__xapi.open()
         for one_vdi in vdis:
             self.__create_vbd_list(one_vdi)
-    
+
     def get_VBDs(self) -> list[XApiOneVbd]:
         """
         Return list[XApiOneVbd]
@@ -84,4 +84,3 @@ class XApiVbdList:
                     vdi = one_vdi
                     )
                 )
-

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
 from src.XApi.XApiSR import XApiOneStorage
 
@@ -11,7 +10,8 @@ class XApiOneVdi():
     uuid  :  71e5b355-e09d-435c-ade0-f052ddf7df5f
     name_label  :  Debian 11x2 on ZFS SR01 0
     name_description  :  Created by template provisioner
-    allowed_operations  :  ['generate_config', 'update', 'forget', 'destroy', 'snapshot', 'resize', 'copy', 'clone']
+    allowed_operations  :  ['generate_config', 'update', 'forget',
+        'destroy', 'snapshot', 'resize', 'copy', 'clone']
     current_operations  :  {}
     SR  :  OpaqueRef:984e8e56-b685-4a19-9640-aeddfa2e5652
     VBDs  :  ['OpaqueRef:5c1c82ca-8e67-461b-904b-688c736ed58d']
@@ -47,9 +47,9 @@ class XApiOneVdi():
     vdi_vbds: list
     vdi_is_a_snapshot: bool
     sr: XApiOneStorage
-    
+
     def __str__(self):
-        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR(dataclass): %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.sr)
+        return f"VDI uuid: {self.vdi_uuid} | Is Snapshot: {self.vdi_is_a_snapshot} | Name Label: {self.vdi_name_label} | SR(dataclass): {self.sr}"
 
     def __repr__(self):
         return str(self)
@@ -62,21 +62,21 @@ class XApiVdiList:
     def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
         self.__all_vdi: list[XApiOneVdi] = []
-    
+
     def set_VDIs(self, nfs_srs: list[XApiOneStorage]) -> None:
         """
         Set list[XApiOneVdi]
         """
         for one_sr in nfs_srs:
-            self.__create_Vdi_list(one_sr)
-    
+            self.__create_vdi_list(one_sr)
+
     def get_VDIs(self) -> list[XApiOneVdi]:
         """
         Return list[XApiOneVdi]
         """
         return self.__all_vdi
 
-    def __create_Vdi_list(self, one_sr: XApiOneStorage) -> None:
+    def __create_vdi_list(self, one_sr: XApiOneStorage) -> None:
         """
         Get data from VDI and append new XApiOneVdi dataclasses to "all_vdi" list
         :return: None
@@ -94,4 +94,3 @@ class XApiVdiList:
                     sr = one_sr
                     )
                 )
-
