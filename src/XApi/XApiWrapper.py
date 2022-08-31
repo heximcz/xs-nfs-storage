@@ -1,7 +1,9 @@
 from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
 from src.XApi.XApiSR import XApiStorageRepositories, XApiOneStorage
-from src.XApi.XApiVDI import XApiVdiList, XApiOneVdi
+from src.XApi.XApiVDI import XApiVdiList
+from src.XApi.XApiVBD import XApiVbdList
+from src.XApi.XApiVM import XApiVmList
 from src.MySQL import MySQL
 
 class XApiWrapper:
@@ -43,7 +45,7 @@ class XApiWrapper:
                         )
         self.__config.logger.info("SR_List - Updated.")
 
-    def update_vdi(self):
+    def run(self):
         """
         All in One
 
@@ -65,10 +67,15 @@ class XApiWrapper:
         vdi = XApiVdiList(self.__config, self.__xapi)
         vdi.set_VDIs(sr.get_NFS_Storages())
 
-        print(vdi.get_VDIs())
+        # set VBDs from VDIs
+        vbd = XApiVbdList(self.__config, self.__xapi)
+        vbd.set_VBDs(vdi.get_VDIs())
 
-        # mam vse v all_vdi
-        # TODO proskenuj VBDs ve VDIs a prirad spravne VM
+        # finally set VM from VBDs
+        vm = XApiVmList(self.__config, self.__xapi)
+        vm.set_VMs(vbd.get_VBDs())
+
+        # print(vm.get_VMs())
 
         # TODO nasypat data do databaze
         # ? jak zjistit pripadne zmeny v uuid

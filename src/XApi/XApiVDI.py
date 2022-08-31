@@ -2,8 +2,8 @@ import os, sys
 import XenAPI
 from dataclasses import dataclass
 from src.Config import LoadConfig
-from src.XApi.XApiSR import XApiOneStorage
 from src.XApi.XApiConnect import XApiConnect
+from src.XApi.XApiSR import XApiOneStorage
 
 @dataclass
 class XApiOneVdi():
