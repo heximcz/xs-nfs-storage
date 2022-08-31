@@ -28,7 +28,7 @@ class XApiVdiList:
                         vdi_name_label = record["name_label"],
                         vdi_vbds = record["VBDs"],
                         vdi_is_a_snapshot = record["is_a_snapshot"],
-                        vdi_sr = one_sr
+                        sr = one_sr
                         )
                     )
         except XenAPI.XenAPI.Failure as e:
@@ -82,7 +82,7 @@ class XApiOneVdi():
     sr: XApiOneStorage
     
     def __str__(self):
-        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR(dataclass): %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.vdi_sr)
+        return "VDI uuid: %s | Is Snapshot: %s | Name Label: %s | SR(dataclass): %s" % (self.vdi_uuid, self.vdi_is_a_snapshot, self.vdi_name_label, self.sr)
 
     def __repr__(self):
         return str(self)
