@@ -9,12 +9,12 @@ from src.XApi.XApiVM import XApiVmList
 from src.MySQL import MySQL
 
 class XApiWrapper:
-    """
+    '''
     Check all disk od all NFS SRs
     Put actual version to database
 
     Just run()
-    """
+    '''
     
     def __init__(self, config: LoadConfig) -> None:
         self.__config = config
@@ -51,7 +51,7 @@ class XApiWrapper:
     #     self.__config.logger.info("SR_List - Updated.")
 
     def run(self):
-        """
+        '''
         All in One
 
         sr-list - obsahuje nazvy a uuid NFS SR
@@ -64,7 +64,7 @@ class XApiWrapper:
         3. proskenuj VBDs v VDIs a prirad spravne VM
         4. nasypat to do databaze
 
-        """
+        '''
         try:
             self.__xapi.open()
 
@@ -97,4 +97,3 @@ class XApiWrapper:
         # ? verzovani v databazi a ukladat vzdy novou
         # ? nebo jit stylem: prvni inicializace a pak jen aktualizace podle dat v databazi.
         # verzovani by bylo lepsi, pak staci udelat rutina ma mazani starych verzi
-
