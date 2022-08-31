@@ -92,8 +92,5 @@ class XApiWrapper:
         print(vm.get_VMs())
 
         # TODO nasypat data do databaze
-        # ? jak zjistit pripadne zmeny v uuid
-        # ? resit to, nebo ne
-        # ? verzovani v databazi a ukladat vzdy novou
-        # ? nebo jit stylem: prvni inicializace a pak jen aktualizace podle dat v databazi.
-        # verzovani by bylo lepsi, pak staci udelat rutina ma mazani starych verzi
+        # navrhnout DB pro verzovani
+        # udelat rutinu ma mazani starych verzi
