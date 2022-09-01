@@ -56,7 +56,6 @@ class XApiVbdList:
         """
         Set list[XApiOneVbd]
         """
-        self.__xapi.open()
         for one_vdi in vdis:
             self.__create_vbd_list(one_vdi)
 
