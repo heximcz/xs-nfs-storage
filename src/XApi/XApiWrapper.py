@@ -6,7 +6,7 @@ from src.XApi.XApiSR import XApiStorageRepositories
 from src.XApi.XApiVDI import XApiVdiList
 from src.XApi.XApiVBD import XApiVbdList
 from src.XApi.XApiVM import XApiVmList
-from src.MySQL import MySQL
+from src.XApi.XApiDatabase import XApiMysql
 
 class XApiWrapper:
     """
@@ -18,62 +18,22 @@ class XApiWrapper:
     
     def __init__(self, config: LoadConfig) -> None:
         self.__config = config
-        self.__mysql = MySQL(config)
         self.__xapi = XApiConnect(config)
     
-    # def update_sr(self):
-    #     """
-    #     Add new NFS SR and update changes in name-label and name-description.
-    #     :return: None
-    #     """
-
-    #     # load NFS SRs from xapi
-    #     sr = XApiStorageRepositories(self.__config, self.__xapi)
-    #     xapi_all_nfs_sr: list[XApiOneStorage] = sr.get_Storages()
-    #     # compare xapi and mysql SRs by uuid, add new or update changes
-    #     for xapi_sr in xapi_all_nfs_sr:
-    #         sr_data = self.__mysql.get_sr_by_uuid(xapi_sr.sr_uuid)
-    #         if sr_data is None:
-    #             # pridej nove SR do DB
-    #             self.__mysql.add_new_sr(
-    #                 xapi_sr.sr_uuid,
-    #                 xapi_sr.sr_name_label,
-    #                 xapi_sr.sr_name_description
-    #                 )
-    #         else:
-    #             # aktualizuj hodnoty (muze se zmenit name label nebo description) v pripade zmeny
-    #             if xapi_sr.sr_name_label != sr_data[2] or xapi_sr.sr_name_description != sr_data[3]:
-    #                 self.__mysql.update_sr(
-    #                     xapi_sr.sr_uuid, 
-    #                     xapi_sr.sr_name_label, 
-    #                     xapi_sr.sr_name_description
-    #                     )
-    #     self.__config.logger.info("SR_List - Updated.")
-
     def run(self):
         """
-        All in One
-
-        sr-list - obsahuje nazvy a uuid NFS SR
-        vm-list - obsahuje nazvy VM
-        sr-file-name - obsahuje nazev souboru (disků) danneho VM a nazev disku v xenu
-
-        Novy postup:
-        1. zacit nactenim SR, jejich zaznam ma vsechny vdi na tom SR
-        2. ze SR nacist jen VDI SR
-        3. proskenuj VBDs v VDIs a prirad spravne VM
-        4. nasypat to do databaze
-
+        Add actual running version of vdi (SR and VM) to database
         """
         try:
             self.__xapi.open()
 
             # NFS SRs from xapi
             sr = XApiStorageRepositories(self.__xapi)
+            sr.set_SRs()
 
             # set VDIs from SR
             vdi = XApiVdiList(self.__xapi)
-            vdi.set_VDIs(sr.get_NFS_Storages())
+            vdi.set_VDIs(sr.get_SRs())
 
             # set VBDs from VDIs
             vbd = XApiVbdList(self.__xapi)
@@ -86,11 +46,41 @@ class XApiWrapper:
         except XenAPI.XenAPI.Failure as e:
             self.__config.logger.error(e)
             sys.exit(os.EX_UNAVAILABLE)
+
         finally:
             self.__xapi.close()
 
-        print(vm.get_VMs())
 
-        # TODO nasypat data do databaze
-        # navrhnout DB pro verzovani
-        # udelat rutinu ma mazani starych verzi
+        ### all to db ###
+
+        # Create new version id
+        db = XApiMysql(self.__config)
+        version_id = db.create_new_version()
+
+        # all virtual machines
+        vms = vm.get_VMs()
+        for one_vm in vms:
+            # VM uuid: 0e16dc5f-a169-c322-2790-fa4e3ca3e47f | 
+            # VM name_label: Deb11 shapshot on SR01 | 
+            # VM is_a_snapshot: True | 
+            # 
+            # VBD(object):
+            # VBD uuid: 2b24c5d5-e0d4-52ed-1c3e-6bf367b1381a | 
+            # VBD device: xvda | 
+            # 
+            # VDI(object): 
+            # VDI uuid: 71e5b355-e09d-435c-ade0-f052ddf7df5f | 
+            # VDI is_a_snapshot: True | 
+            # VDI name_label: Debian 11x2 on ZFS SR01 0 | 
+            # 
+            # SR(object): 
+            # SR uuid: 7590b1d2-521a-2ccb-92e8-f1192b18a76c, 
+            # SR name_label: STORAGE 01, 
+            # SR name_description: NFS SR [172.44.1.5:/xcpng/xenserver]
+
+            # 1. add SR
+            # 2. add VM
+            # 3. add VDI
+            sr_id = db.add_sr(one_vm.vbd.vdi.sr, version_id)
+            vm_id = db.add_vm(one_vm, version_id)
+            db.add_vdi(one_vm.vbd.vdi, version_id, sr_id, vm_id, one_vm.vbd.vbd_device)
