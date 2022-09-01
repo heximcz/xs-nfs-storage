@@ -102,7 +102,7 @@ class XApiOneVm():
     vbd: XApiOneVbd
 
     def __str__(self):
-        return f"VM uuid: {self.vm_uuid} | VM Name: {self.vm_name_label} | VM Is Snapshot: {self.vm_is_a_snapshot} | VBD(object) {self.vbd}"
+        return f"VM uuid: {self.vm_uuid} | VM name_label: {self.vm_name_label} | VM is_a_snapshot: {self.vm_is_a_snapshot} | VBD(object): {self.vbd}"
 
     def __repr__(self):
         return str(self)

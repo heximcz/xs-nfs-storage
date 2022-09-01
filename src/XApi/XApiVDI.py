@@ -49,7 +49,7 @@ class XApiOneVdi():
     sr: XApiOneStorage
 
     def __str__(self):
-        return f"VDI uuid: {self.vdi_uuid} | Is Snapshot: {self.vdi_is_a_snapshot} | Name Label: {self.vdi_name_label} | SR(dataclass): {self.sr}"
+        return f"VDI uuid: {self.vdi_uuid} | VDI is_a_snapshot: {self.vdi_is_a_snapshot} | VDI name_label: {self.vdi_name_label} | SR(object): {self.sr}"
 
     def __repr__(self):
         return str(self)

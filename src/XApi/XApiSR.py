@@ -37,7 +37,7 @@ class XApiOneStorage():
 
     # print class as str
     def __str__(self):
-        return f"Storage uuid: {self.sr_uuid}, Name Label: {self.sr_name_label}, Name Description: {self.sr_name_description}"
+        return f"SR uuid: {self.sr_uuid}, SR name_label: {self.sr_name_label}, SR name_description: {self.sr_name_description}"
 
     def __repr__(self):
         return str(self)

@@ -38,7 +38,7 @@ class XApiOneVbd():
     vdi: XApiOneVdi
 
     def __str__(self):
-        return f"VBD uuid: {self.vbd_uuid} | VDI(object): {self.vdi}"
+        return f"VBD uuid: {self.vbd_uuid} | VBD device: {self.vbd_device} | VDI(object): {self.vdi}"
 
     def __repr__(self):
         return str(self)
