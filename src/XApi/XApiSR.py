@@ -48,18 +48,30 @@ class XApiStorageRepositories:
 
     def __init__(self, xapi: XApiConnect) -> None:
         self.__xapi = xapi
-        self.__one_sr: list[XApiOneStorage] = []
+        self.__all_sr: list[XApiOneStorage] = []
 
-    def get_NFS_Storages(self) -> list[XApiOneStorage]:
+    def set_SRs(self) -> None:
+        """
+        Set list[XApiOneStorage]
+        """
+        self.__create_sr_list()
+
+    def get_SRs(self) -> list[XApiOneStorage]:
+        """
+        :return: list[XApiOneStorage]
+        """
+        return self.__all_sr
+
+    def __create_sr_list(self) -> None:
         """
         Get data from NFS SRs and create list of dataclasses
-        :return: list[XApiOneStorage]
+        :return: None
         """
         all_sr = self.__xapi.session.xenapi.SR.get_all()
         for sr in all_sr:
             record = self.__xapi.session.xenapi.SR.get_record(sr)
             if (record["type"] == "nfs"):
-                self.__one_sr.append(
+                self.__all_sr.append(
                     XApiOneStorage(
                         sr_uuid = record["uuid"],
                         sr_name_label = record["name_label"],
@@ -67,5 +79,3 @@ class XApiStorageRepositories:
                         sr_vdis = record["VDIs"]
                         )
                     )
-        
-        return self.__one_sr
