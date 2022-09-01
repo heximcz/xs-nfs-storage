@@ -1,7 +1,8 @@
+import operator
 from dataclasses import dataclass
 from src.XApi import XApiConnect
 
-@dataclass
+@dataclass(order=True)
 class XApiOneStorage():
     """
     SR structure from XAPI
@@ -58,9 +59,9 @@ class XApiStorageRepositories:
 
     def get_SRs(self) -> list[XApiOneStorage]:
         """
-        :return: list[XApiOneStorage]
+        :return: sorted(list[XApiOneStorage])
         """
-        return self.__all_sr
+        return sorted(self.__all_sr, key=operator.attrgetter("sr_name_label"))
 
     def __create_sr_list(self) -> None:
         """
