@@ -4,3 +4,4 @@ from src.XApi.XApiSR import XApiStorageRepositories
 from src.XApi.XApiVDI import XApiVdiList
 from src.XApi.XApiVBD import XApiVbdList
 from src.XApi.XApiVM import XApiVmList
+from src.XApi.XApiDatabase import XApiMysql
