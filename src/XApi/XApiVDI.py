@@ -72,7 +72,7 @@ class XApiVdiList:
 
     def get_VDIs(self) -> list[XApiOneVdi]:
         """
-        Return list[XApiOneVdi]
+        :return: list[XApiOneVdi]
         """
         return self.__all_vdi
 

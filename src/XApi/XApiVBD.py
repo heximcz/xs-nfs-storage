@@ -61,7 +61,7 @@ class XApiVbdList:
 
     def get_VBDs(self) -> list[XApiOneVbd]:
         """
-        Return list[XApiOneVbd]
+        :return: list[XApiOneVbd]
         """
         return self.__all_vbd
 

@@ -76,6 +76,7 @@ class XApiMysql(MySQL):
     def _insert(self, command: str) -> int:
         """
         Insert new row. Return row id.
+        :return: int
         """
         my_cursor = self._mydb.cursor()
         my_cursor.execute(command)
@@ -86,6 +87,7 @@ class XApiMysql(MySQL):
     def _fetch_one(self, command: str) -> int:
         """
         Fetch one row. Return row id.
+        :return: int
         """
         my_cursor = self._mydb.cursor()
         my_cursor.execute(command)
