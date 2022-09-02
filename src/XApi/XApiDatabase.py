@@ -73,9 +73,9 @@ class XApiMysql(MySQL):
              '{one_vdi.vdi_name_label}', '{one_vdi.vdi_is_a_snapshot}', '{vbd_device}')
             """)
 
-    def _insert(self, command) -> int:
+    def _insert(self, command: str) -> int:
         """
-        Insert new row
+        Insert new row. Return row id.
         """
         my_cursor = self._mydb.cursor()
         my_cursor.execute(command)
@@ -83,7 +83,10 @@ class XApiMysql(MySQL):
         my_cursor.close()
         return my_cursor.lastrowid
 
-    def _fetch_one(self, command) -> int:
+    def _fetch_one(self, command: str) -> int:
+        """
+        Fetch one row. Return row id.
+        """
         my_cursor = self._mydb.cursor()
         my_cursor.execute(command)
         id = my_cursor.fetchone()
