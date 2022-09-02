@@ -8,8 +8,7 @@ class MySQL:
 
     def __init__(self, config: LoadConfig) -> None:
         """
-        :param config: instanceof LoadConfig
-        :return
+        MySQL connect
         """
         self.__mysql = config.get_mysql()
         try:
