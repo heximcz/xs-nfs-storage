@@ -1,5 +1,6 @@
 import os, sys
 import XenAPI
+import mysql.connector
 from src.Config import LoadConfig
 from src.XApi.XApiConnect import XApiConnect
 from src.XApi.XApiSR import XApiStorageRepositories
@@ -53,21 +54,26 @@ class XApiWrapper:
             self.__xapi.close()
 
         # save new generated version to db
+        try:
 
-        # create new version id
-        db = XApiMysql(self.__config)
-        version_id = db.create_new_version()
+            db = XApiMysql(self.__config)
 
-        # get all virtual machines list
-        vms = vm.get_VMs()
-        for one_vm in vms:
-            # add SR to db
-            sr_id = db.add_sr(one_vm.vbd.vdi.sr, version_id)
-            # add VM to db
-            vm_id = db.add_vm(one_vm, version_id)
-            # add VDI to db
-            db.add_vdi(one_vm.vbd.vdi, version_id, sr_id, vm_id, one_vm.vbd.vbd_device)
+            # create new version ID
+            version_id = db.create_new_version()
 
-        # TODO add try/except to all to db
+            # get all virtual machines list
+            vms = vm.get_VMs()
+            for one_vm in vms:
+                # add SR to db
+                sr_id = db.add_sr(one_vm.vbd.vdi.sr, version_id)
+                # add VM to db
+                vm_id = db.add_vm(one_vm, version_id)
+                # add VDI to db
+                db.add_vdi(one_vm.vbd.vdi, version_id, sr_id, vm_id, one_vm.vbd.vbd_device)
+
+        except mysql.connector.errors.ProgrammingError as err:
+            self.__config.logger.error(f"Error Code: {err.errno} | SQLSTATE: {err.sqlstate} | Message: {err.msg}")
+            sys.exit(os.EX_UNAVAILABLE)
+
         # TODO add delete method - delete x-days older
         # TODO add print reconstruction output from db
