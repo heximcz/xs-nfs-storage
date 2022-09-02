@@ -20,8 +20,5 @@ class MySQL:
                 database=self.__mysql['database']
             )
         except mysql.connector.Error as err:
-            print(err)
-            print("Error Code: ", err.errno)
-            print("SQLSTATE: ", err.sqlstate)
-            print("Message: ", err.msg)
+            config.logger.error(f"Error Code: {err.errno} | SQLSTATE: {err.sqlstate} | Message: {err.msg}")
             sys.exit(os.EX_UNAVAILABLE)
