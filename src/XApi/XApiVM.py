@@ -118,7 +118,7 @@ class XApiVmList:
 
     def set_VMs(self, vbds: list[XApiOneVbd]) -> None:
         """
-        Set list[XApiOneVbd]
+        Set list[XApiOneVm]
         """
         for one_vbd in vbds:
             self.__create_vm_list(one_vbd)
@@ -126,7 +126,7 @@ class XApiVmList:
     def get_VMs(self) -> list[XApiOneVm]:
         """
         List with all information about VM (SR, VDI, VBD but for one VDI from VM)
-        Return list[XApiOneVm]
+        :return: list[XApiOneVm]
         """
         return self.__all_vm
 
