@@ -2,5 +2,11 @@ XenAPI
 pyyaml
 mysql-connector-python
 fire
+flask
+bcrypt
+flask_bcrypt
+#python-whois
+#pathlib2
+Flask-WTF
 mypy
 pylint
