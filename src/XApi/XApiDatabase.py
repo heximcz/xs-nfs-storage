@@ -40,7 +40,7 @@ class XApiMysql(MySQL):
             ('{version_id}', '{one_sr.sr_uuid}', '{one_sr.sr_name_label}', '{one_sr.sr_name_description}');
             """)
 
-    def add_vm(self, one_vm: XApiOneVm, version_id: int) -> int:
+    def add_vm(self, one_vm: XApiOneVm, version_id: int) -> int | None:
         """
         Add new VM to db or search exist VM and return VM id in db
         :return: int
@@ -52,6 +52,7 @@ class XApiMysql(MySQL):
             """)
         if id:
             return int(id[0])
+        return None
 
         # VM uuid not in db, create new row
         return self._insert(f"""
