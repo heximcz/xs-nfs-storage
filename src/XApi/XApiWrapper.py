@@ -53,6 +53,11 @@ class XApiWrapper:
         finally:
             self.__xapi.close()
 
+        # vms = vm.get_VMs()
+        # for one_vm in vms:
+        #     print(one_vm)
+        # exit()
+
         # save new generated version to db
         try:
 
@@ -68,8 +73,8 @@ class XApiWrapper:
                 sr_id = db.add_sr(one_vm.vbd.vdi.sr, version_id)
                 # add VM to db
                 vm_id = db.add_vm(one_vm, version_id)
-                if vm_id is None:
-                    raise mysql.connector.errors.ProgrammingError("HERE IS NO VM ID!")
+                # if vm_id is None:
+                #     raise mysql.connector.errors.ProgrammingError("HERE IS NO VM ID!")
                 # add VDI to db
                 db.add_vdi(one_vm.vbd.vdi, version_id, sr_id, vm_id, one_vm.vbd.vbd_device)
 

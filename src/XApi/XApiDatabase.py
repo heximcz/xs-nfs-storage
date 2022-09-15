@@ -52,12 +52,13 @@ class XApiMysql(MySQL):
             """)
         if id:
             return int(id[0])
-        return None
+#        return None
 
         # VM uuid not in db, create new row
         return self._insert(f"""
-            INSERT INTO `vm` (`version`, `uuid`, `name_label`, `name_description`, `snapshot`)
-            VALUES ('{version_id}', '{one_vm.vm_uuid}', '{one_vm.vm_name_label}', '{one_vm.vm_name_description}', '{one_vm.vm_is_a_snapshot}');
+            INSERT INTO `vm` (`version`, `uuid`, `name_label`, `name_description`, `snapshot`, `snapshot_of`)
+            VALUES ('{version_id}', '{one_vm.vm_uuid}', '{one_vm.vm_name_label}', '{one_vm.vm_name_description}',
+             '{one_vm.vm_is_a_snapshot}', '{one_vm.vm_snapshot_of}');
             """)
 
     def add_vdi(self, one_vdi: XApiOneVdi, version_id: int, sr_id: int, vm_id: int, vbd_device: str) -> None:

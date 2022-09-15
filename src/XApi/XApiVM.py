@@ -99,10 +99,11 @@ class XApiOneVm():
     vm_name_label: str
     vm_name_description: str
     vm_is_a_snapshot: bool
+    vm_snapshot_of: str
     vbd: XApiOneVbd
 
     def __str__(self):
-        return f"VM uuid: {self.vm_uuid} | VM name_label: {self.vm_name_label} | VM is_a_snapshot: {self.vm_is_a_snapshot} | VBD(object): {self.vbd}"
+        return f"VM uuid: {self.vm_uuid} | VM name_label: {self.vm_name_label} | VM is_a_snapshot: {self.vm_is_a_snapshot} | VM Snapshot Of: {self.vm_snapshot_of} | VBD(object): {self.vbd}"
 
     def __repr__(self):
         return str(self)
@@ -139,12 +140,17 @@ class XApiVmList:
         # load one by one VM to a dataclass list
         # ..._or = OpaqueRef
         record = self.__xapi.session.xenapi.VM.get_record(one_vbd.vbd_vm)
+        # check vm snapshot_of
+        if record["is_a_snapshot"]:
+            vm_origin = self.__xapi.session.xenapi.VM.get_record(record["snapshot_of"])
+            record["snapshot_of"] = vm_origin["uuid"]
         self.__all_vm.append(
             XApiOneVm(
                 vm_uuid = record["uuid"],
                 vm_name_label = record["name_label"],
                 vm_name_description = record["name_description"],
                 vm_is_a_snapshot = record["is_a_snapshot"],
+                vm_snapshot_of = record["snapshot_of"] if record["snapshot_of"] != "OpaqueRef:NULL" else "",
                 vbd = one_vbd
                 )
             )
