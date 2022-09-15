@@ -52,7 +52,6 @@ class XApiMysql(MySQL):
             """)
         if id:
             return int(id[0])
-#        return None
 
         # VM uuid not in db, create new row
         return self._insert(f"""
