@@ -8,6 +8,7 @@ class XApiMysql(MySQL):
 
     def __init__(self, config: LoadConfig) -> None:
         super().__init__(config)
+        self.__config = config
 
     def create_new_version(self) -> int:
         """
@@ -73,6 +74,29 @@ class XApiMysql(MySQL):
             ('{version_id}', '{vm_id}', '{sr_id}', '{one_vdi.vdi_uuid}',
              '{one_vdi.vdi_name_label}', '{one_vdi.vdi_is_a_snapshot}', '{vbd_device}')
             """)
+
+    def delete_old(self) -> None:
+        """
+        delete old version and keep x versions from config
+        """
+
+        command = f"""
+        DELETE FROM `version`
+          WHERE id NOT IN (
+            SELECT id
+              FROM (
+                SELECT id
+                FROM `version`
+                ORDER BY id DESC
+                LIMIT {self.__config.env("number_of_versions")}
+          ) foo
+        );
+        """
+        my_cursor = self._mydb.cursor()
+        my_cursor.execute(command)
+        self._mydb.commit()
+        my_cursor.close()
+        return
 
     def _insert(self, command: str) -> int:
         """
