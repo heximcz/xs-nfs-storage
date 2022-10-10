@@ -1,38 +1,103 @@
 {% extends "base.html" %}
 {% block title %}DKIM BH{% endblock %}
 {% block content %}
-<h2>Výběr verze</h2>
-<form method="POST" action="/change-version">
+<h3>Výběr verze</h3>
+<form method="POST" action="/show-version">
 <div class="row">
   <div class="col">
-    <select class="form-select" aria-label="Default select example">
-    {% for x in vdi_versions %}
-      <option value="{{x[0]}}" {% if actual_version == x[0] %}selected{%endif%}>verze: {{x[0]}} - ze dne: {{x[1].strftime('%d.%m %Y %H:%M:%S')}}</option>
+    <select name="version" class="form-select" aria-label="Version select">
+    {% for ver in vdi_versions %}
+      <option value="{{ver[0]}}" {% if ver[0] == actual_version %}selected{% endif %}>verze: {{ver[0]}} - ze dne: {{ver[1].strftime('%d.%m %Y %H:%M:%S')}}</option>
     {% endfor %}
     </select>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   </div>
   <div class="col-4">
-    <button type="submit" class="btn btn-danger"><i class="bi bi-gear"></i> Zobrazit verzi</button>
+    <button type="submit" class="btn btn-danger"><i class="bi bi-gear"></i> Zobrazit vybranou verzi</button>
   </div>
-  <div class="col">
-  </div>
+  <div class="col"></div>
 </div>
 </form>
-<h2 class="pt-5">Neco s NFS</h2>
+<h2 class="pt-5"></h2>
 <table class="table table-striped table-hover">
-    <thead>
-      <tr>
-        <th scope="col">x</th>
-        <th scope="col">y</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>x</td>
-          <td>y</td>
-        </tr>
-    </tbody>
-  </table>
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">VM Label</th>
+      <th scope="col">VM UUID</th>
+      <th scope="col">VDI Name</th>
+      <th scope="col">VDI UUID (filename on NFS)</th>
+      <th scope="col">VBD</th>
+      <th scope="col">SR Name</th>
+      <th scope="col">SR UUID (dirname on NFS)</th>
+      <th scope="col" class="text-center"><i class="bi bi-camera-fill"></i></th>
+</tr>
+  </thead>
+  <tbody>
+    {% for one_vm in vm_list %}
+    <tr>
+      <td><i class="bi bi-pc-display-horizontal text-success"></i></td>
+      <td>{{ one_vm.vm_name_label|e }}</td>
+      <td>{{ one_vm.vm_uuid|e }}</td>
+      <td>{{ one_vm.vdi_name_label }}</td>
+      <td>{{ one_vm.vdi_uuid }}.vhd</td>
+      <td>{{ one_vm.vbd_device }}</td>
+      <td>{{ one_vm.storage_name_label }}</td>
+      <td>{{ one_vm.storage_uuid }}</td>
+      <td>
+      {% if one_vm.snapshots %}
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#Modal{{ one_vm.vdi_uuid | replace("-", "") }}">
+          <i class="bi bi-camera-fill"></i>
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="Modal{{ one_vm.vdi_uuid | replace("-", "") }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ModalLabel"><i class="bi bi-camera-fill"></i> Snapshots for {{ one_vm.vm_name_label|e }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Snapshot Label</th>
+                      <th scope="col">Snapshot UUID</th>
+                      <th scope="col">VDI Name Label</th>
+                      <th scope="col">VDI UUID (filename on NFS)</th>
+                      <th scope="col">VBD</th>
+                      <th scope="col">SR Name</th>
+                      <th scope="col">SR UUID (dirname on NFS)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for one_snapshot in one_vm.snapshots %}
+                    <tr>
+                      <td>{{ one_snapshot.vm_name_label }}</td>
+                      <td>{{ one_snapshot.vm_uuid }}</td>
+                      <td>{{ one_snapshot.vdi_name_label }}</td>
+                      <td>{{ one_snapshot.vdi_uuid }}</td>
+                      <td>{{ one_snapshot.vbd_device }}</td>
+                      <td>{{ one_snapshot.storage_name_label }}</td>
+                      <td>{{ one_snapshot.storage_uuid }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
 {% block js %}
 <!-- <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script> -->

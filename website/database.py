@@ -24,12 +24,11 @@ class VDIMySQL(MySQL):
             SELECT 
             vm.uuid as vm_uuid,
             vm.name_label as vm_name_label,
-            vm.name_description as vm_name_description,
             vdi.name_label as vdi_name_label,
             vdi.uuid as vdi_uuid,
             vdi.vbd_device as vbd_device,
             storages.name_label,
-            storages.name_description
+            storages.uuid as sr_uuid
             FROM vdi 
             JOIN vm ON vdi.vm = vm.id 
             JOIN storages ON vdi.storage = storages.id 
@@ -47,12 +46,11 @@ class VDIMySQL(MySQL):
             vm.uuid as vm_uuid,
             vm.name_label as vm_name_label,
             vm.snapshot_of as vm_uuid_snaphost_of,
-            vm.name_description as vm_name_description,
             vdi.name_label as vdi_name_label,
             vdi.uuid as vdi_uuid,
             vdi.vbd_device as vbd_device,
             storages.name_label,
-            storages.name_description
+            storages.uuid as sr_uuid
             FROM vdi 
             JOIN vm ON vdi.vm = vm.id 
             JOIN storages ON vdi.storage = storages.id 
