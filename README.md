@@ -11,7 +11,7 @@ In case the mounted nfs array is forgotten in xcp-ng (xenserver) and the array i
 - activate venv
 - install dependencies (pip3 install -r requirements.txt)
 - copy config-default.yml to config.yml and configure it
-- create log file in /var/log/xs-storage.log
+- create log file: touch /var/log/xs-storage.log
 - create logrotate config for log file
 - available commands: xs_nfs_storage.py run | delete
 
