@@ -13,3 +13,6 @@ xs:
     login: "root"
     # root password
     pwd: "mysecretpassword"
+
+# keep number of versions in db - default 10
+number_of_versions: 10
