@@ -8,12 +8,16 @@
 - activate venv
 - install dependencies (pip3 install -r requirements.txt)
 - copy config-default.yml to config.yml and configure it
+- create log file in /var/log/xs-storage.log
+- create logrotate config for log file
 - available commands: xs_nfs_storage.py run | delete
 
 ## Install and run Unicorn webpage
 
-- xxx
-- yyy
+- copy /doc/xs-nfs-storage.service to /etc/systemd/system/
+- systemctl enable xs-nfs-storage.service
+- install nginx
+- configure nginx (template in /doc/)
 
 ## Tests on
 - XCP-NG 8.2.1
