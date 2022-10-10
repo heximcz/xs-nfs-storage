@@ -25,5 +25,5 @@ In case the mounted nfs array is forgotten in xcp-ng (xenserver) and the array i
 
 ## Tests on
 - XCP-NG 8.2.1
-- Mariadb 10.3.34
+- Mariadb 10.3.34 and 10.6.7
 - PHP 8.1.6
