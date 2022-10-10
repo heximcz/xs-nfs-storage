@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve xs-nfs web
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/opt/xs-nfs-storage
+Environment="PATH=/opt/xs-nfs-storage/xs-venv/bin"
+ExecStart=/opt/xs-nfs-storage/xs-venv/bin/gunicorn --workers 3 --bind unix:xs-nfs-web.sock -m 007 main:app
+
+[Install]
+WantedBy=multi-user.target
