@@ -3,4 +3,3 @@ __pycache__/
 website/__pycache__
 *.py[cod]
 /xs-venv
-/doc
