@@ -1,0 +1,24 @@
+https://google.github.io/styleguide/pyguide.html
+
+dataclass
+https://towardsdatascience.com/9-reasons-why-you-should-start-using-python-dataclasses-98271adadc66
+
+xapi
+https://xapi-project.github.io/xen-api/
+
+what is OpaqueRef:
+https://wiki.xenproject.org/wiki/OpaqueRef_and_uuid_relationship_in_xapi
+When someone starts to work with XenAPI he founds strange 'OpaqueRef' objects in relationship fields instead expected UUIDs.
+UUIDs used as unique identificator in 'xe' CLI, so everyone starts to convert OpaqueRef to UUIDs. This take some resources
+and slow down operations.
+Actually, UUID is not the 'core' identificator of objects, it just something like 'name-label', but more unique. It can be
+found in 'natural' form as domain handler (libxc), as filename/logical volume label for VID in SR/SM implementation and so on.
+In certain cases it can be even change during object lifetime (for example, when you import vm with uuid preservation, xapi create
+vm with some random UUID and change it to required later).
+But xapi use OpaqueRef as real object identificator, the primary key in internal xapi database. When one object points to other
+it does not say 'link=uuid', it says 'link=opaqueref'.
+So, for purposes of relationship management OpaqueRef is enough. Conversion to uuid shall be used for:
+User interaction (most for 'xe' CLI)
+XC interaction for VM object ('handle' field of domain_getinfo)
+lowlevel SR operations (outside xapi)
+... and other out-of-xapi things
