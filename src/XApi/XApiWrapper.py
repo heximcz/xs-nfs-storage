@@ -53,11 +53,6 @@ class XApiWrapper:
         finally:
             self.__xapi.close()
 
-        # vms = vm.get_VMs()
-        # for one_vm in vms:
-        #     print(one_vm)
-        # exit()
-
         # save new generated version to db
         try:
 
@@ -80,5 +75,9 @@ class XApiWrapper:
             self.__config.logger.error(f"Error Code: {err.errno} | SQLSTATE: {err.sqlstate} | Message: {err.msg}")
             sys.exit(os.EX_UNAVAILABLE)
 
-        # TODO add delete method - delete x-days older
-        # TODO add print reconstruction output from db
+    def delete(self):
+        """
+        Delete old versions
+        """
+        db = XApiMysql(self.__config)
+        db.delete_old()
