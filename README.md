@@ -1,5 +1,8 @@
 # Disaster backup of xenserver (XCP-NG) VDIs disk file names on NFS SR
 
+## Reason
+
+In case the mounted nfs array is forgotten in xcp-ng (xenserver) and the array itself is fine. In this case, the virtual servers will lose their disks without the possibility of recovery. This simple script stores the link of the vdi uuid on the disk with the name of the virtual server for disaster recovery. It simply stores individual versions from the time of the backup and can be viewed using the built-in web application. Cron is used to set how often the current status should be saved, and at the same time a function for deleting old versions is included. More in the configuration file. Remember that this disaster recovery should not run in the virtual environment you are backing up! This script only reads the values from the xapi and stores them in a database that can be viewed through the built-in web interface.
 
 ## Install
 
