@@ -1,12 +1,13 @@
 from flask_bcrypt import Bcrypt
+from getpass import getpass
 
 bcrypt = Bcrypt()
 
 ### production password
-#print(bcrypt.generate_password_hash('any password'))
+passwd = getpass(prompt='Password:')
 
-### Store password here
-#passwd = '$2b$12$nedngTnzSX3vxOzwabsZUOcOOKnfm7GRKweN.QhyEwEJnU2b48Koe'
+print("Here is your password for web. Copy only text inside in quotation marks!")
+print(bcrypt.generate_password_hash(passwd))
 
 ### check password
 #if bcrypt.check_password_hash(passwd, 'any password'):

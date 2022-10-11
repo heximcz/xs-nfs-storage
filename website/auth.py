@@ -8,6 +8,7 @@ from flask import (
     url_for
 )
 from flask_bcrypt import Bcrypt
+from src.Config import LoadConfig
 
 auth = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
@@ -27,8 +28,9 @@ class User:
     def get_password(self):
         return f'{self.password}'
 
-### help in /doc/BCrypt.py
-user = User(id=1, username='admin', password='$2b$12$nedngTnzSX3vxOzwabsZUOcOOKnfm7GRKweN.QhyEwEJnU2b48Koe')
+# new password generate via /doc/BCrypt.py and save to config.yml
+config = LoadConfig()
+user = User(id=1, username='admin', password=config.env("web_password"))
 
 @auth.before_request
 def before_request():

@@ -14,5 +14,9 @@ xs:
     # root password
     pwd: "mysecretpassword"
 
-# keep number of versions in db - default 10
+# web password - default 'admin'
+# new password generate via /doc/BCrypt.py
+web_password: $2b$12$TG/TPZEXG3dkjR7687hSAOjeGNazKhIl5WtyesDDcyA/6jS7CkMeC
+
+# keep number of versions in db - default '10'
 number_of_versions: 10
