@@ -67,7 +67,7 @@ In case the mounted NFS array is forgotten in xcp-ng (xenserver) and the array i
 ## [License MIT](license.txt)
 
 ## Conclusion
-This script was created on the basis of the XAPI study and does not currently aim to expand further, unless the community or other developers show interest. However, I will be happy for a warning about bugs or possible participation in the form of a merge.
+This script was created on the basis of the XAPI study and does not currently aim to expand further, unless the community or other developers show interest. However, I will be happy for a warning about bugs or possible participation in the form of a pull request.
 
 ## Special thanks
 Thank you very much to [BEST-HOSTING s.r.o.](https://best-hosting.cz) for providing resources for testing.
