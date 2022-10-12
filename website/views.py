@@ -95,7 +95,7 @@ def showVersion():
 
     return redirect(url_for('views.home'))
 
-def processData(version: int, mysql: VDIMySQL) -> List:
+def processData(version: int, mysql: VDIMySQL) -> list:
     """
     process data from database for selected version
     """
