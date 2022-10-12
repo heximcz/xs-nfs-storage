@@ -39,27 +39,27 @@ In case the mounted NFS array is forgotten in xcp-ng (xenserver) and the array i
 - Mariadb 10.3.34 and 10.6.7
 - Python 3.10.6 and 3.10.7
 - Ubuntu 22.04.1
-- Package / Version
-- - bcrypt                 4.0.1
-- - click                  8.1.3
-- - fire                   0.4.0
-- - Flask                  2.2.2
-- - Flask-Bcrypt           1.0.1
-- - Flask-WTF              1.0.1
-- - future                 0.18.2
-- - gunicorn               20.1.0
-- - itsdangerous           2.1.2
-- - Jinja2                 3.1.2
-- - MarkupSafe             2.1.1
-- - mysql-connector-python 8.0.30
-- - pathlib2               2.3.7.post1
-- - pip                    22.0.2
-- - protobuf               3.20.1
-- - python-whois           0.8.0
-- - PyYAML                 6.0
-- - setuptools             59.6.0
-- - six                    1.16.0
-- - termcolor              2.0.1
-- - Werkzeug               2.2.2
-- - WTForms                3.0.1
-- - XenAPI                 2.14
+- venv: Package / Version
+  - bcrypt                 4.0.1
+  - click                  8.1.3
+  - fire                   0.4.0
+  - Flask                  2.2.2
+  - Flask-Bcrypt           1.0.1
+  - Flask-WTF              1.0.1
+  - future                 0.18.2
+  - gunicorn               20.1.0
+  - itsdangerous           2.1.2
+  - Jinja2                 3.1.2
+  - MarkupSafe             2.1.1
+  - mysql-connector-python 8.0.30
+  - pathlib2               2.3.7.post1
+  - pip                    22.0.2
+  - protobuf               3.20.1
+  - python-whois           0.8.0
+  - PyYAML                 6.0
+  - setuptools             59.6.0
+  - six                    1.16.0
+  - termcolor              2.0.1
+  - Werkzeug               2.2.2
+  - WTForms                3.0.1
+  - XenAPI                 2.14
