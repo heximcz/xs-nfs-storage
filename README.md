@@ -63,3 +63,8 @@ In case the mounted NFS array is forgotten in xcp-ng (xenserver) and the array i
   - Werkzeug               2.2.2
   - WTForms                3.0.1
   - XenAPI                 2.14
+
+## [License MIT](license.txt)
+
+## Conclusion
+This script was created on the basis of the XAPI study and does not currently aim to expand further, unless the community or other developers show interest.
