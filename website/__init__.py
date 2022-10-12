@@ -1,5 +1,5 @@
 from flask import Flask, redirect, flash, url_for
-from datetime import timedelta
+from datetime import timedelta, datetime
 from flask_wtf.csrf import CSRFProtect, CSRFError
 
 app = Flask(__name__)
@@ -10,8 +10,12 @@ csrf = CSRFProtect(app)
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    flash('Platnost formuláře vypršela. Zkuste to znovu.', category='error')
+    flash('The form has expired. Try it again.', category='error')
     return redirect(url_for('views.home'))
+
+@app.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
 
 def vdi_app():
 

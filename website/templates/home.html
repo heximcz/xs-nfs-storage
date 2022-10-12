@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block title %}XEN NFS DISKs - Disaster backup{% endblock %}
 {% block content %}
-<h3>Výběr verze</h3>
+<h3>Select version</h3>
 <form method="POST" action="/show-version">
 <div class="row">
   <div class="col">
     <select name="version" class="form-select" aria-label="Version select">
     {% for ver in vdi_versions %}
-      <option value="{{ver[0]}}" {% if ver[0] == actual_version %}selected{% endif %}>verze: {{ver[0]}} - ze dne: {{ver[1].strftime('%d.%m %Y %H:%M:%S')}}</option>
+      <option value="{{ver[0]}}" {% if ver[0] == actual_version %}selected{% endif %}>version: {{ver[0]}} - from: {{ver[1].strftime('%d.%m %Y %H:%M:%S')}}</option>
     {% endfor %}
     </select>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   </div>
   <div class="col-4">
-    <button type="submit" class="btn btn-danger"><i class="bi bi-gear"></i> Zobrazit vybranou verzi</button>
+    <button type="submit" class="btn btn-danger"><i class="bi bi-gear"></i> Show selected version</button>
   </div>
   <div class="col"></div>
 </div>
