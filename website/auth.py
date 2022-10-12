@@ -28,7 +28,7 @@ class User:
     def get_password(self):
         return f'{self.password}'
 
-# new password generate via /doc/BCrypt.py and save to config.yml
+# new password generate via /doc/BCrypt.py and save it to the config.yml
 config = LoadConfig()
 user = User(id=1, username='admin', password=config.env("web_password"))
 

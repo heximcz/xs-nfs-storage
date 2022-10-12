@@ -3,7 +3,7 @@ from datetime import timedelta
 from flask_wtf.csrf import CSRFProtect, CSRFError
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'uNt!ruK5ul6a971tujuNtop2e'
+app.config['SECRET_KEY'] = '6h1o9Q59#eOT&ne$#%T*9mAej1&Nlns5'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
 
 csrf = CSRFProtect(app)

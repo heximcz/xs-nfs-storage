@@ -1,4 +1,3 @@
-from ensurepip import version
 from src.Config import LoadConfig
 from src.MySQL.MySQL import MySQL
 
