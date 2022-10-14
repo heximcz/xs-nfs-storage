@@ -2,7 +2,7 @@
 
 ## Reason
 
-In case the mounted NFS array is forgotten in xcp-ng (xenserver) and the array itself is fine. In this case, the virtual servers will lose their disks without the possibility of recovery. This simple script stores the link of the vdi uuid on the disk with the name of the virtual server for disaster recovery. It simply stores individual versions from the time of the backup and can be viewed using the built-in web application. Cron is used to set how often the current status should be saved, and at the same time a function for deleting old versions is included. More in the configuration file. Remember that this disaster recovery should not run in the virtual environment you are backing up! This script only reads the values from the xapi and stores them in a database that can be viewed through the built-in web interface.
+This script is used in case the NFS storage was inadvertently removed (forgotten). In this situation the virtual servers lose information about the connected disks without the possibility of recovery. This simple script stores the link of the vdi uuid on the disk with the name of the virtual server for disaster recovery. Script simply stores individual versions from the time of the backup and can be viewed using the built-in web application. Cron is used to set how often the current status should be saved. The function for deleting old versions at the same time is included. For more information see configuration file. This disaster recovery should not run in the virtual environment that you are backing up! This script only reads the values from the XAPI and stores them in a database that can be viewed through the built-in web interface.
 
 ## Install
 
@@ -13,8 +13,14 @@ In case the mounted NFS array is forgotten in xcp-ng (xenserver) and the array i
 - copy config-default.yml to config.yml and configure it
 - to generate new password for web use /doc/BCrypt.py
 - create log file (touch /var/log/xs-storage.log)
-- available options: python3 xs_nfs_storage.py <run|delete>
-- before use built-in web app you must first run: python3 xs_nfs_storage.py run
+
+## Usage
+
+```
+python3 xs_nfs_storage.py <run|delete>
+```
+
+before use built-in web app you must first run: python3 xs_nfs_storage.py run
 
 ## Cron
 - edit cron_nfs_storage.sh file and configure 'INSTALL_PATH' and 'VENV_DIR_NAME' options
@@ -67,7 +73,8 @@ In case the mounted NFS array is forgotten in xcp-ng (xenserver) and the array i
 ## [License MIT](license.txt)
 
 ## Conclusion
-This script was created on the basis of the XAPI study and does not currently aim to expand further, unless the community or other developers show interest. However, I will be happy for a warning about bugs or possible participation in the form of a pull request.
+
+This script was created based on the [XAPI](https://github.com/xapi-project/xen-api) study and is not intended to replace standard disaster recovery tools. It is not a priority to develop the script without the interest of the community or other developers. I will be glad for any warnings about bugs in the code or pull requests.
 
 ## Special thanks
 Thank you very much to [BEST-HOSTING s.r.o.](https://best-hosting.cz) for providing resources for testing.
